@@ -1,5 +1,6 @@
 package com.smartshop.shop.model;
 
+import com.smartshop.shop.enums.PaymentStatus;
 import com.smartshop.shop.enums.TypePayment;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -28,6 +29,9 @@ public class Payment {
 
     @Enumerated(EnumType.STRING)
     private TypePayment typePayment;
+
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus paymentStatus;
 
     @ManyToOne
     @JoinColumn(name = "order_id")

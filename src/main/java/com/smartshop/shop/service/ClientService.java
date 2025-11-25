@@ -3,11 +3,13 @@ package com.smartshop.shop.service;
 import com.smartshop.shop.dto.requestDTO.ClientRequestDTO;
 import com.smartshop.shop.dto.responseDTO.ClientResponseDTO;
 import com.smartshop.shop.enums.CustomerTier;
+import com.smartshop.shop.enums.OrderStatus;
 import com.smartshop.shop.enums.Role;
 import com.smartshop.shop.exception.BusinessException;
 import com.smartshop.shop.exception.ResourceNotFoundException;
 import com.smartshop.shop.mapper.ClientMapper;
 import com.smartshop.shop.model.Client;
+import com.smartshop.shop.model.Order;
 import com.smartshop.shop.model.User;
 import com.smartshop.shop.repository.ClientRepository;
 import com.smartshop.shop.repository.UserRepository;
@@ -17,6 +19,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -67,5 +73,58 @@ public class ClientService {
 
     public void deleteClient(String clientId){
         clientRepository.deleteById(clientId);
+    }
+
+    @Transactional
+    public void updateClientStatistics(String clientId) {
+        Client client = clientRepository.findById(clientId)
+                .orElseThrow(() -> new ResourceNotFoundException("Client not found"));
+
+        List<Order> confirmedOrders = client.getOrderList().stream()
+                .filter(order -> order.getStatus() == OrderStatus.CONFIRMED)
+                .toList();
+
+        client.setTotalOrders(confirmedOrders.size());
+
+        BigDecimal totalSpent = confirmedOrders.stream()
+                .map(Order::getTotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        client.setTotalSpent(totalSpent);
+
+        if (!confirmedOrders.isEmpty()) {
+            Optional<LocalDate> firstDate = confirmedOrders.stream()
+                    .map(Order::getDate)
+                    .min(Comparator.naturalOrder());
+
+            Optional<LocalDate> lastDate = confirmedOrders.stream()
+                    .map(Order::getDate)
+                    .max(Comparator.naturalOrder());
+
+            client.setFirstOrderDate(firstDate.orElse(null));
+            client.setLastOrderDate(lastDate.orElse(null));
+        } else {
+            client.setFirstOrderDate(null);
+            client.setLastOrderDate(null);
+        }
+
+        updateLoyaltyTier(client);
+
+        clientRepository.save(client);
+    }
+
+    private void updateLoyaltyTier(Client client) {
+        int count = client.getTotalOrders();
+        BigDecimal spent = client.getTotalSpent();
+
+        if (count >= 20 || spent.compareTo(new BigDecimal("15000")) >= 0) {
+            client.setCustomerTier(CustomerTier.PLATINUM);
+        } else if (count >= 10 || spent.compareTo(new BigDecimal("5000")) >= 0) {
+            client.setCustomerTier(CustomerTier.GOLD);
+        } else if (count >= 3 || spent.compareTo(new BigDecimal("1000")) >= 0) {
+            client.setCustomerTier(CustomerTier.SILVER);
+        } else {
+            client.setCustomerTier(CustomerTier.BASIC);
+        }
     }
 }

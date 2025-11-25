@@ -19,6 +19,7 @@ public interface OrderMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "date", ignore = true)
     @Mapping(target = "status", constant = "PENDING")
+    @Mapping(target = "promoCode", ignore = true)
     Order toEntity(OrderRequestDTO dto);
 
     @Mapping(source = "product.nom", target = "productName")

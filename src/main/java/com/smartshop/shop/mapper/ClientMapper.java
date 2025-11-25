@@ -3,8 +3,7 @@ package com.smartshop.shop.mapper;
 import com.smartshop.shop.dto.requestDTO.ClientRequestDTO;
 import com.smartshop.shop.dto.responseDTO.ClientResponseDTO;
 import com.smartshop.shop.model.Client;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.mapstruct.*;
 
 @Mapper(componentModel = "spring", uses = {UserMapper.class, OrderMapper.class})
 public interface ClientMapper {
@@ -13,4 +12,7 @@ public interface ClientMapper {
     ClientResponseDTO toResponse(Client client);
 
     Client toEntity(ClientRequestDTO dto);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateClientFromDto(ClientRequestDTO dto, @MappingTarget Client client);
 }

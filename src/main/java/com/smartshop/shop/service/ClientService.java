@@ -5,6 +5,7 @@ import com.smartshop.shop.dto.responseDTO.ClientResponseDTO;
 import com.smartshop.shop.enums.CustomerTier;
 import com.smartshop.shop.enums.Role;
 import com.smartshop.shop.exception.BusinessException;
+import com.smartshop.shop.exception.ResourceNotFoundException;
 import com.smartshop.shop.mapper.ClientMapper;
 import com.smartshop.shop.model.Client;
 import com.smartshop.shop.model.User;
@@ -50,5 +51,21 @@ public class ClientService {
         Client savedClient = clientRepository.save(client);
 
         return clientMapper.toResponse(savedClient);
+    }
+
+    @Transactional
+    public ClientResponseDTO updateClient(String clientId, ClientRequestDTO newClient){
+        Client client = clientRepository.findById(clientId).orElseThrow(
+                () -> new ResourceNotFoundException("Aucun Client avec id: "+clientId)
+        );
+        clientMapper.updateClientFromDto(newClient, client);
+
+        Client savedClient = clientRepository.save(client);
+
+        return clientMapper.toResponse(savedClient);
+    }
+
+    public void deleteClient(String clientId){
+        clientRepository.deleteById(clientId);
     }
 }

@@ -3,7 +3,6 @@ package com.smartshop.shop.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -18,11 +17,11 @@ public class Product {
     private String id;
 
     private String nom;
-    private BigDecimal prixUnitaire;
+    private double prixUnitaire;
     private Integer stockDisponible;
 
     private Boolean deleted = false;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems;
 }

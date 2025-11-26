@@ -3,8 +3,6 @@ package com.smartshop.shop.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.math.BigDecimal;
-
 @Entity
 @Getter
 @Setter
@@ -17,15 +15,15 @@ public class OrderItem {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id")
     private Product product;
 
     private Integer quantity;
-    private BigDecimal prixUnitaire;
-    private BigDecimal totalLigne;
+    private double prixUnitaire;
+    private double totalLigne;
 }

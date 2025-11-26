@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
@@ -20,7 +19,7 @@ public class PaymentRequestDTO {
 
     @NotNull(message = "Amount is required")
     @Positive(message = "Amount must be positive")
-    private BigDecimal montant;
+    private double montant;
 
     @NotNull(message = "Payment type is required")
     private TypePayment typePayment;

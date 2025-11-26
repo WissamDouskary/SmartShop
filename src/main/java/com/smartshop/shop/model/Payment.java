@@ -5,7 +5,6 @@ import com.smartshop.shop.enums.TypePayment;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -21,7 +20,7 @@ public class Payment {
     private String id;
 
     private Integer paymentNumber;
-    private BigDecimal montant;
+    private double montant;
     private LocalDate datePayment = LocalDate.now();
     private LocalDate dateEncaissement;
 

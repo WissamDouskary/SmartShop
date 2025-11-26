@@ -4,7 +4,6 @@ import com.smartshop.shop.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -21,11 +20,11 @@ public class Order {
     private String id;
 
     private LocalDate date;
-    private BigDecimal sousTotal;
-    private BigDecimal remise;
-    private BigDecimal tva;
-    private BigDecimal total;
-    private BigDecimal montantRestant;
+    private double sousTotal;
+    private double remise;
+    private double tva;
+    private double total;
+    private double montantRestant;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
@@ -34,11 +33,11 @@ public class Order {
     @JoinColumn(name = "promo_code_id")
     private PromoCode promoCode;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "client_id")
     private Client client;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItemList;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)

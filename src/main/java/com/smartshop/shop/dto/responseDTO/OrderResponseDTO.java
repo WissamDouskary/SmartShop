@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -18,11 +17,11 @@ public class OrderResponseDTO {
     private String clientName;
     private OrderStatus status;
 
-    private BigDecimal sousTotal;
-    private BigDecimal remise;
-    private BigDecimal tva;
-    private BigDecimal total;
-    private BigDecimal montantRestant;
+    private double sousTotal;
+    private double remise;
+    private double tva;
+    private double total;
+    private double montantRestant;
 
     private List<OrderItemResponseDTO> items;
     private List<PaymentResponseDTO> payments;

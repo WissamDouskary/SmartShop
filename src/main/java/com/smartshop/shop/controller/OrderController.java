@@ -1,6 +1,7 @@
 package com.smartshop.shop.controller;
 
 import com.smartshop.shop.dto.ApiResponse;
+import com.smartshop.shop.dto.requestDTO.OrderRequestDTO;
 import com.smartshop.shop.dto.responseDTO.OrderResponseDTO;
 import com.smartshop.shop.enums.Role;
 import com.smartshop.shop.exception.AccessDeniedException;
@@ -8,15 +9,13 @@ import com.smartshop.shop.exception.ResourceNotFoundException;
 import com.smartshop.shop.model.Client;
 import com.smartshop.shop.repository.ClientRepository;
 import com.smartshop.shop.service.OrderService;
+import com.smartshop.shop.utils.AdminChecker;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,6 +25,18 @@ import java.util.List;
 public class OrderController {
     private final OrderService orderService;
     private final ClientRepository clientRepository;
+
+    @PostMapping
+    public ResponseEntity<ApiResponse<OrderResponseDTO>> createOrder(
+            @RequestBody OrderRequestDTO dto,
+            HttpServletRequest request
+    ){
+        AdminChecker.isAdmin(request);
+
+        OrderResponseDTO responseDTO = orderService.createOrder(dto);
+
+        return ResponseEntity.ok(ApiResponse.success(responseDTO, "Order Created successfully"));
+    }
 
     @GetMapping("/client/{clientId}")
     public ResponseEntity<ApiResponse<List<OrderResponseDTO>>> getClientHistory(

@@ -4,7 +4,6 @@ import com.smartshop.shop.enums.CustomerTier;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -27,7 +26,7 @@ public class Client {
     private CustomerTier customerTier = CustomerTier.BASIC;
 
     private Integer totalOrders = 0;
-    private BigDecimal totalSpent = BigDecimal.ZERO;
+    private double totalSpent = 0;
 
     private LocalDate firstOrderDate;
     private LocalDate lastOrderDate;

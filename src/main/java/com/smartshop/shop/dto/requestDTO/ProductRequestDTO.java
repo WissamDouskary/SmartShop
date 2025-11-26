@@ -8,8 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,7 +17,7 @@ public class ProductRequestDTO {
 
     @NotNull(message = "Price is required")
     @Positive(message = "Price must be greater than 0")
-    private BigDecimal prixUnitaire;
+    private double prixUnitaire;
 
     @NotNull(message = "Stock is required")
     @Min(value = 0, message = "Stock cannot be negative")

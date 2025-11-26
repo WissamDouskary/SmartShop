@@ -6,9 +6,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 public class AdminChecker {
-    public static boolean isAdmin(HttpServletRequest request){
-        Role userRole = (Role) request.getSession().getAttribute("USER_ROLE");
-        return userRole.equals(Role.ADMIN);
+    public static void isAdmin(HttpServletRequest request){
+        HttpSession session = request.getSession(false);
+        if(session == null){
+            throw new AccessDeniedException("You must be logged in!");
+        }
+        Role userRole = (Role) session.getAttribute("USER_ROLE");
+        if(!userRole.equals(Role.ADMIN)){
+            throw new AccessDeniedException("Access Denied: Only Admins Cas do this!");
+        }
     }
 
     public static void checkAdminAccess(HttpServletRequest request) {

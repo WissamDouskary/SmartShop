@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
@@ -17,7 +16,7 @@ public class ClientResponseDTO {
     private String email;
     private CustomerTier customerTier;
     private Integer totalOrders;
-    private BigDecimal totalSpent;
+    private double totalSpent;
     private LocalDate firstOrderDate;
     private LocalDate lastOrderDate;
     private UserResponseDTO user;

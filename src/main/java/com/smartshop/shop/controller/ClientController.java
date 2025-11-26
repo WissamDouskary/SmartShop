@@ -3,12 +3,9 @@ package com.smartshop.shop.controller;
 import com.smartshop.shop.dto.ApiResponse;
 import com.smartshop.shop.dto.requestDTO.ClientRequestDTO;
 import com.smartshop.shop.dto.responseDTO.ClientResponseDTO;
-import com.smartshop.shop.enums.Role;
-import com.smartshop.shop.exception.AccessDeniedException;
 import com.smartshop.shop.service.ClientService;
 import com.smartshop.shop.utils.AdminChecker;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,9 +22,7 @@ public class ClientController {
             @RequestBody @Valid ClientRequestDTO dto,
             HttpServletRequest request
     ){
-        if (!AdminChecker.isAdmin(request)) {
-            throw new AccessDeniedException("Only Admins can create new clients.");
-        }
+        AdminChecker.isAdmin(request);
 
         ClientResponseDTO newClient = clientService.createClient(dto);
 
@@ -40,9 +35,7 @@ public class ClientController {
             @RequestBody ClientRequestDTO dto,
             HttpServletRequest request
     ){
-        if(!AdminChecker.isAdmin(request)){
-            throw new AccessDeniedException("Only Admins can update clients.");
-        }
+        AdminChecker.isAdmin(request);
 
         ClientResponseDTO responseDTO = clientService.updateClient(id, dto);
 
@@ -54,9 +47,7 @@ public class ClientController {
             @PathVariable("id") String id,
             HttpServletRequest request
     ){
-        if(!AdminChecker.isAdmin(request)){
-            throw new AccessDeniedException("Only Admins can delete clients.");
-        }
+        AdminChecker.isAdmin(request);
 
         clientService.deleteClient(id);
 

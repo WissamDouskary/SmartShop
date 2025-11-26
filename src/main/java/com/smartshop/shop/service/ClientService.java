@@ -18,7 +18,6 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
@@ -51,7 +50,7 @@ public class ClientService {
 
         client.setCustomerTier(CustomerTier.BASIC);
         client.setTotalOrders(0);
-        client.setTotalSpent(BigDecimal.valueOf(0));
+        client.setTotalSpent(0);
 
         client.setUser(user);
         Client savedClient = clientRepository.save(client);
@@ -86,9 +85,9 @@ public class ClientService {
 
         client.setTotalOrders(confirmedOrders.size());
 
-        BigDecimal totalSpent = confirmedOrders.stream()
-                .map(Order::getTotal)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        double totalSpent = confirmedOrders.stream()
+                .mapToDouble(Order::getTotal)
+                .sum();
 
         client.setTotalSpent(totalSpent);
 
@@ -115,13 +114,13 @@ public class ClientService {
 
     private void updateLoyaltyTier(Client client) {
         int count = client.getTotalOrders();
-        BigDecimal spent = client.getTotalSpent();
+        double spent = client.getTotalSpent();
 
-        if (count >= 20 || spent.compareTo(new BigDecimal("15000")) >= 0) {
+        if (count >= 20 || spent >= 15000) {
             client.setCustomerTier(CustomerTier.PLATINUM);
-        } else if (count >= 10 || spent.compareTo(new BigDecimal("5000")) >= 0) {
+        } else if (count >= 10 || spent >= 5000) {
             client.setCustomerTier(CustomerTier.GOLD);
-        } else if (count >= 3 || spent.compareTo(new BigDecimal("1000")) >= 0) {
+        } else if (count >= 3 || spent >= 1000) {
             client.setCustomerTier(CustomerTier.SILVER);
         } else {
             client.setCustomerTier(CustomerTier.BASIC);

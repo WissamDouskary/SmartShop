@@ -4,6 +4,7 @@ import com.smartshop.shop.dto.requestDTO.OrderItemRequestDTO;
 import com.smartshop.shop.dto.requestDTO.OrderRequestDTO;
 import com.smartshop.shop.dto.responseDTO.OrderResponseDTO;
 import com.smartshop.shop.enums.CustomerTier;
+import com.smartshop.shop.enums.OrderStatus;
 import com.smartshop.shop.exception.BusinessException;
 import com.smartshop.shop.exception.ResourceNotFoundException;
 import com.smartshop.shop.mapper.OrderMapper;
@@ -147,5 +148,22 @@ public class OrderService {
             return 15;
         }
         return 0;
+    }
+
+    @Transactional
+    public OrderResponseDTO confirmOrderAfterCompletingPayment(String orderId){
+        Order order = orderRepository.findById(orderId).orElseThrow(
+                () -> new ResourceNotFoundException("aucun order avec id : "+orderId)
+        );
+
+        if(order.getMontantRestant() != 0){
+            throw new BusinessException("can't confirme order, because it is not full paid");
+        }
+
+        order.setStatus(OrderStatus.CONFIRMED);
+        order.getClient().setTotalOrders(order.getClient().getTotalOrders() + 1);
+        Order savedOrder = orderRepository.save(order);
+
+        return orderMapper.toResponse(savedOrder);
     }
 }

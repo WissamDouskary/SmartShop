@@ -8,8 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,6 +22,5 @@ public class PaymentRequestDTO {
     @NotNull(message = "Payment type is required")
     private TypePayment typePayment;
 
-    private LocalDate dateEcheance;
-    private String reference;
+    private String dateEcheance;
 }

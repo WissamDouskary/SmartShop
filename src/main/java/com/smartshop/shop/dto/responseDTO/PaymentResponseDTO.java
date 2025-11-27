@@ -14,8 +14,10 @@ import java.time.LocalDate;
 public class PaymentResponseDTO {
     private String id;
     private Integer paymentNumber;
+    private String reference;
     private double montant;
     private LocalDate datePayment;
-    private PaymentStatus status;
+    private PaymentStatus paymentStatus;
     private TypePayment typePayment;
+    private LocalDate dateEcheance;
 }

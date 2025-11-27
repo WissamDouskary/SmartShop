@@ -20,9 +20,10 @@ public class Payment {
     private String id;
 
     private Integer paymentNumber;
+    private String reference;
     private double montant;
     private LocalDate datePayment = LocalDate.now();
-    private LocalDate dateEncaissement;
+    private LocalDate dateEcheance;;
 
     @Enumerated(EnumType.STRING)
     private TypePayment typePayment;

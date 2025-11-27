@@ -75,4 +75,16 @@ public class OrderController {
 
         return ResponseEntity.ok(ApiResponse.success(history, "Historique des commandes récupéré"));
     }
+
+    @PutMapping("{id}/confirm")
+    public ResponseEntity<ApiResponse<OrderResponseDTO>> confirmOrderAfterPayment(
+            @PathVariable("id") String id,
+            HttpServletRequest request
+    ){
+        AdminChecker.isAdmin(request);
+
+        OrderResponseDTO responseDTO = orderService.confirmOrderAfterCompletingPayment(id);
+
+        return ResponseEntity.ok(ApiResponse.success(responseDTO, "Order updated successfully!"));
+    }
 }

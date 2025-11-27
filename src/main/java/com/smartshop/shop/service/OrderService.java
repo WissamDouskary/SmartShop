@@ -70,7 +70,7 @@ public class OrderService {
             sub_total = sub_total + lineTotal;
 
             OrderItem orderItem = OrderItem.builder()
-                    .order(orderMapper.toEntity(dto))
+                    .order(order)
                     .prixUnitaire(product.getPrixUnitaire())
                     .quantity(item.getQuantity())
                     .product(product)

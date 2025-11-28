@@ -126,4 +126,12 @@ public class ClientService {
             client.setCustomerTier(CustomerTier.BASIC);
         }
     }
+
+    public ClientResponseDTO clientProfile(String clientId){
+        Client client = clientRepository.findById(clientId).orElseThrow(
+                () -> new ResourceNotFoundException("Aucun client avec id:" + clientId)
+        );
+
+        return clientMapper.toResponse(client);
+    }
 }

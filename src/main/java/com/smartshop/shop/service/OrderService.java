@@ -64,6 +64,7 @@ public class OrderService {
             );
 
             if(item.getQuantity() > product.getStockDisponible()){
+                order.setStatus(OrderStatus.REJECTED);
                 throw new BusinessException("Quantity est plus élevé que nos stock disponible!");
             }
 

@@ -4,6 +4,7 @@ import com.smartshop.shop.dto.requestDTO.OrderItemRequestDTO;
 import com.smartshop.shop.dto.requestDTO.OrderRequestDTO;
 import com.smartshop.shop.dto.responseDTO.OrderResponseDTO;
 import com.smartshop.shop.enums.CustomerTier;
+import com.smartshop.shop.enums.OrderStatus;
 import com.smartshop.shop.exception.BusinessException;
 import com.smartshop.shop.exception.ResourceNotFoundException;
 import com.smartshop.shop.mapper.OrderMapper;
@@ -62,6 +63,7 @@ public class OrderService {
             );
 
             if(item.getQuantity() > product.getStockDisponible()){
+                order.setStatus(OrderStatus.REJECTED);
                 throw new BusinessException("Quantity est plus élevé que nos stock disponible!");
             }
 

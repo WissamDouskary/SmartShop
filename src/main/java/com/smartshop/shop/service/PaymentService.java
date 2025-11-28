@@ -91,7 +91,6 @@ public class PaymentService {
     @Transactional
     public void calculatingOrderMontantRestant(Order order, Payment savedPayment){
         order.setMontantRestant(order.getMontantRestant() - savedPayment.getMontant());
-        order.getClient().setTotalSpent(order.getClient().getTotalSpent() + savedPayment.getMontant());
         orderRepository.save(order);
     }
 }

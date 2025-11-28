@@ -30,6 +30,7 @@ public class OrderService {
     private final ProductRepository productRepository;
     private final ClientRepository clientRepository;
     private final PromoCodeRepository promoCodeRepository;
+    private final ClientService clientService;
 
     @Transactional
     public OrderResponseDTO createOrder(OrderRequestDTO dto){
@@ -161,7 +162,7 @@ public class OrderService {
         }
 
         order.setStatus(OrderStatus.CONFIRMED);
-        order.getClient().setTotalOrders(order.getClient().getTotalOrders() + 1);
+        clientService.updateClientStatistics(order.getClient().getId());
         Order savedOrder = orderRepository.save(order);
 
         return orderMapper.toResponse(savedOrder);

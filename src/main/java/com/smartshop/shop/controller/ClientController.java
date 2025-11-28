@@ -3,9 +3,14 @@ package com.smartshop.shop.controller;
 import com.smartshop.shop.dto.ApiResponse;
 import com.smartshop.shop.dto.requestDTO.ClientRequestDTO;
 import com.smartshop.shop.dto.responseDTO.ClientResponseDTO;
+import com.smartshop.shop.enums.Role;
+import com.smartshop.shop.exception.AccessDeniedException;
+import com.smartshop.shop.model.Client;
+import com.smartshop.shop.repository.ClientRepository;
 import com.smartshop.shop.service.ClientService;
 import com.smartshop.shop.utils.AdminChecker;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ClientController {
     private final ClientService clientService;
+    private final ClientRepository clientRepository;
 
     @PostMapping
     public ResponseEntity<ApiResponse<ClientResponseDTO>> createClient(
@@ -30,7 +36,7 @@ public class ClientController {
     }
 
     @PatchMapping("/{id}")
-    private ResponseEntity<ApiResponse<ClientResponseDTO>> updateClient(
+    public ResponseEntity<ApiResponse<ClientResponseDTO>> updateClient(
             @PathVariable("id") String id,
             @RequestBody ClientRequestDTO dto,
             HttpServletRequest request
@@ -43,7 +49,7 @@ public class ClientController {
     }
 
     @DeleteMapping("/{id}")
-    private ResponseEntity<ApiResponse<ClientResponseDTO>> deleteClient(
+    public ResponseEntity<ApiResponse<ClientResponseDTO>> deleteClient(
             @PathVariable("id") String id,
             HttpServletRequest request
     ){
@@ -52,5 +58,28 @@ public class ClientController {
         clientService.deleteClient(id);
 
         return ResponseEntity.ok(ApiResponse.success(null, "Client deleted successfully"));
+    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<ApiResponse<ClientResponseDTO>> ClientProfile(
+            HttpServletRequest request
+    ){
+
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            throw new AccessDeniedException("You must be logged in.");
+        }
+
+        String user_id = (String) session.getAttribute("USER_ID");
+        Role user_role = (Role) session.getAttribute("USER_ROLE");
+
+        if(user_role.equals(Role.ADMIN)){
+            throw new AccessDeniedException("Just client who can see profiles!");
+        }
+
+        Client client = clientRepository.findClientByUser_Id(user_id);
+        ClientResponseDTO responseDTO = clientService.clientProfile(client.getId());
+
+        return ResponseEntity.ok(ApiResponse.success(responseDTO, "Your Profile"));
     }
 }
